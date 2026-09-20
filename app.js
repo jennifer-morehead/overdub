@@ -53,6 +53,7 @@ const MAX_LATENCY_COMPENSATION = 0.35;
 const TIMING_STEP = 0.01;
 const MAX_TIMING_ADJUSTMENT = 0.5;
 const METRONOME_LOOKAHEAD = 0.1;
+const RECORDING_BITS_PER_SECOND = 192000;
 
 function formatTime(seconds) {
   const safeSeconds = Math.max(0, Math.floor(seconds));
@@ -259,8 +260,39 @@ async function playTracksFromStart() {
 }
 
 function preferredMimeType() {
-  const types = ["audio/webm;codecs=opus", "audio/webm", "audio/mp4"];
+  const types = [
+    "audio/webm;codecs=opus",
+    "audio/mp4;codecs=mp4a.40.2",
+    "audio/webm",
+    "audio/mp4",
+  ];
   return types.find((type) => MediaRecorder.isTypeSupported(type)) || "";
+}
+
+function microphoneConstraints() {
+  const supported = navigator.mediaDevices.getSupportedConstraints?.() || {};
+  const audio = {
+    echoCancellation: false,
+    noiseSuppression: false,
+    autoGainControl: false,
+  };
+  if (supported.sampleRate) audio.sampleRate = { ideal: 48000 };
+  if (supported.sampleSize) audio.sampleSize = { ideal: 16 };
+  if (supported.channelCount) audio.channelCount = { ideal: 1 };
+  return audio;
+}
+
+function createMediaRecorder(stream) {
+  const mimeType = preferredMimeType();
+  const options = { audioBitsPerSecond: RECORDING_BITS_PER_SECOND };
+  if (mimeType) options.mimeType = mimeType;
+
+  try {
+    return new MediaRecorder(stream, options);
+  } catch {
+    // Some older Safari releases reject bitrate options even though recording works.
+    return new MediaRecorder(stream, mimeType ? { mimeType } : undefined);
+  }
 }
 
 async function startRecording() {
@@ -276,16 +308,11 @@ async function startRecording() {
   try {
     await ensureAudioContext();
     microphoneStream = await navigator.mediaDevices.getUserMedia({
-      audio: {
-        echoCancellation: false,
-        noiseSuppression: false,
-        autoGainControl: false,
-      },
+      audio: microphoneConstraints(),
       video: false,
     });
 
-    const mimeType = preferredMimeType();
-    mediaRecorder = new MediaRecorder(microphoneStream, mimeType ? { mimeType } : undefined);
+    mediaRecorder = createMediaRecorder(microphoneStream);
     recordedChunks = [];
     mediaRecorder.addEventListener("dataavailable", (event) => {
       if (event.data.size > 0) recordedChunks.push(event.data);
