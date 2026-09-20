@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#0d0f0c" />
+    <title>Overdub — audio sketchbook</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="app-header">
+        <div>
+          <h1>Overdub</h1>
+          <p>Audio doodles. Record. Layer. Download.</p>
+        </div>
+        <div class="headphone-note" aria-label="Wired headphones recommended">
+          <span aria-hidden="true">◖</span>
+          Wired headphones recommended
+        </div>
+      </header>
+
+      <section class="metronome-panel" aria-label="Metronome settings">
+        <div>
+          <strong>Metronome</strong>
+          <span>Preview and set your tempo before recording.</span>
+        </div>
+        <div class="metronome-control">
+          <button id="metronome-button" class="metronome-button" type="button" aria-pressed="false">
+            Metronome off
+          </button>
+          <label for="bpm-input">BPM</label>
+          <input id="bpm-input" type="number" min="40" max="240" step="1" value="120" inputmode="numeric" />
+        </div>
+        <div class="loop-setup">
+          <label class="loop-mode-label"><input id="loop-mode-input" type="checkbox" /> Loop recording</label>
+          <label>Length
+            <select id="loop-bars-input" disabled>
+              <option value="1">1 bar</option>
+              <option value="2">2 bars</option>
+              <option value="4" selected>4 bars</option>
+              <option value="8">8 bars</option>
+            </select>
+          </label>
+          <label>Count-in
+            <select id="count-in-input" disabled>
+              <option value="0">Off</option>
+              <option value="1" selected>1 bar</option>
+            </select>
+          </label>
+        </div>
+      </section>
+
+      <div id="global-error-slot">
+        <p id="error-message" class="error-message" role="alert" hidden></p>
+      </div>
+
+      <section id="empty-state" class="empty-state">
+        <div class="empty-mark" aria-hidden="true">
+          <span></span><span></span><span></span><span></span><span></span>
+        </div>
+        <h2>Your audio notebook is empty</h2>
+        <p>Record a sound, a harmony, or the start of an idea.</p>
+        <button id="first-record-button" class="primary-button" type="button">
+          <span class="record-dot" aria-hidden="true"></span>
+          Record first layer
+        </button>
+      </section>
+
+      <section id="recording-panel" class="recording-panel" hidden aria-live="polite">
+        <div class="recording-status">
+          <span class="recording-pulse" aria-hidden="true"></span>
+          <span id="recording-label">Recording Layer 1</span>
+        </div>
+        <div id="recording-time" class="recording-time">00:00</div>
+        <p id="overdub-note" hidden>Existing layers are playing. Wired headphones give the lowest delay.</p>
+        <button id="stop-recording-button" class="stop-recording-button" type="button">
+          <span aria-hidden="true"></span>
+          Stop recording
+        </button>
+      </section>
+
+      <section id="workspace" class="workspace" hidden>
+        <div class="transport" aria-label="Global controls">
+          <div class="transport-left">
+            <div class="transport-buttons">
+              <button id="play-all-button" class="secondary-button" type="button">
+                <span aria-hidden="true">▶</span> Play all
+              </button>
+              <button id="stop-all-button" class="secondary-button" type="button">
+                <span aria-hidden="true">■</span> Stop
+              </button>
+            </div>
+          </div>
+          <button id="add-layer-button" class="primary-button" type="button">
+            <span class="record-dot" aria-hidden="true"></span>
+            Add layer
+          </button>
+        </div>
+
+        <div id="workspace-error-slot"></div>
+
+        <div class="layers-heading">
+          <h2>Layers</h2>
+          <span id="layer-count">0 layers</span>
+        </div>
+        <div id="track-list" class="track-list"></div>
+
+        <div class="bounce-panel">
+          <div>
+            <h2>Download mix</h2>
+            <p id="bounce-summary">Auto uses the longest audible layer.</p>
+          </div>
+          <div class="bounce-controls">
+            <label for="bounce-length-input">Length</label>
+            <select id="bounce-length-input">
+              <option value="auto" selected>Auto</option>
+              <option value="1">1 bar</option>
+              <option value="2">2 bars</option>
+              <option value="4">4 bars</option>
+              <option value="8">8 bars</option>
+              <option value="16">16 bars</option>
+              <option value="32">32 bars</option>
+            </select>
+            <button id="bounce-button" class="secondary-button" type="button">Download WAV</button>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <template id="track-template">
+      <article class="track-card">
+        <div class="track-info">
+          <h3></h3>
+          <span class="track-duration"></span>
+          <div class="waveform-wrap" aria-hidden="true">
+            <canvas class="track-waveform"></canvas>
+            <span class="waveform-playhead"></span>
+          </div>
+          <div class="timing-controls" aria-label="Layer timing adjustment">
+            <button class="timing-button track-earlier" type="button">← Earlier</button>
+            <span class="timing-value">On time</span>
+            <button class="timing-button track-later" type="button">Later →</button>
+          </div>
+        </div>
+        <div class="track-actions">
+          <button class="icon-button track-play" type="button" aria-label="Play layer">
+            <span aria-hidden="true">▶</span>
+          </button>
+          <button class="icon-button track-mute" type="button" aria-label="Mute layer">
+            <span aria-hidden="true">◖</span>
+          </button>
+          <button class="icon-button track-delete" type="button" aria-label="Delete layer">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+      </article>
+    </template>
+
+    <script src="app.js" defer></script>
+  </body>
+</html>
