@@ -91,6 +91,7 @@ h1 { margin-bottom: 7px; font-size: 24px; letter-spacing: -0.04em; }
 
 .empty-state h2 { margin-bottom: 10px; font-size: 21px; letter-spacing: -0.025em; }
 .empty-state p { margin-bottom: 30px; font-size: 14px; }
+.empty-state .device-note { margin: 18px 0 0; font-size: 11px; }
 
 .primary-button, .secondary-button, .stop-recording-button, .icon-button {
   border: 0;
