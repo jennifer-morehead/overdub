@@ -174,6 +174,22 @@ h1 { margin-bottom: 7px; font-size: 24px; letter-spacing: -0.04em; }
 .metronome-control { display: flex; align-items: center; gap: 8px; color: var(--muted); font-size: 11px; }
 .metronome-button { padding: 0; border: 0; background: transparent; color: var(--muted); font: inherit; cursor: pointer; }
 .metronome-button[aria-pressed="true"] { color: var(--accent-dark); font-weight: 650; }
+.metronome-button.is-beat { animation: metronome-beat 180ms ease-out; }
+.metronome-button.is-downbeat { --beat-color: rgba(234, 255, 56, 0.28); }
+
+@keyframes metronome-beat {
+  0% { color: var(--accent); text-shadow: 0 0 12px var(--beat-color, rgba(234, 255, 56, 0.16)); transform: scale(1.08); }
+  100% { text-shadow: none; transform: scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .metronome-button.is-beat { animation-name: metronome-beat-reduced; }
+
+  @keyframes metronome-beat-reduced {
+    0% { color: var(--accent); text-shadow: 0 0 12px var(--beat-color, rgba(234, 255, 56, 0.16)); }
+    100% { text-shadow: none; }
+  }
+}
 .metronome-control label { margin-left: 5px; }
 .metronome-control input { width: 58px; padding: 5px 7px; border: 1px solid var(--line); border-radius: 6px; background: var(--card); color: var(--ink); font: inherit; font-variant-numeric: tabular-nums; }
 .loop-setup { display: flex; align-items: center; gap: 10px; width: 100%; padding-top: 11px; border-top: 1px solid var(--line); color: var(--muted); font-size: 11px; }

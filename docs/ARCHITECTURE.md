@@ -77,7 +77,7 @@ The original blob is retained for the life of the project, but only the mixed WA
 
 ## Timing and transport
 
-Playback is scheduled against `AudioContext.currentTime`, with a short 30 ms lead time. Metronome clicks are generated using oscillators and gain envelopes, then scheduled 100 ms ahead by a 25 ms JavaScript timer.
+Playback is scheduled against `AudioContext.currentTime`, with a short 30 ms lead time. Metronome clicks are generated using oscillators and gain envelopes, then scheduled 100 ms ahead by a 25 ms JavaScript timer. Visual beats use the same scheduled audio timestamps, keeping the audio clock authoritative while presenting synchronized UI feedback.
 
 For overdubs and loops, the app combines browser-reported output latency with the transport lead time, capped at 350 ms. Users can then move individual tracks earlier or later in 10 ms increments, up to 500 ms in either direction.
 
@@ -137,4 +137,3 @@ The interface has three primary states: empty, recording, and workspace. The DOM
 4. Add a master limiter and clipping indicator.
 5. Establish desktop and mobile browser test matrices.
 6. Investigate iOS audio-session reset and channel-routing behavior as a dedicated mobile milestone.
-

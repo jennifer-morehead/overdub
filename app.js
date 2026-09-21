@@ -47,6 +47,7 @@ let selectedTrackId = null;
 let playheadAnimationFrame = null;
 let playbackMode = null;
 const metronomeNodes = new Set();
+const visualBeatTimers = new Set();
 
 const TRANSPORT_LEAD_TIME = 0.03;
 const MAX_LATENCY_COMPENSATION = 0.35;
@@ -136,6 +137,25 @@ function startPlayheadAnimation() {
   }
 }
 
+function scheduleVisualBeat(time, isDownbeat) {
+  const delay = Math.max(0, (time - audioContext.currentTime) * 1000);
+  const beatTimer = window.setTimeout(() => {
+    visualBeatTimers.delete(beatTimer);
+    elements.metronomeButton.classList.remove("is-beat", "is-downbeat");
+    // Restart the animation even when beats are scheduled close together.
+    void elements.metronomeButton.offsetWidth;
+    elements.metronomeButton.classList.add("is-beat");
+    elements.metronomeButton.classList.toggle("is-downbeat", isDownbeat);
+
+    const resetTimer = window.setTimeout(() => {
+      visualBeatTimers.delete(resetTimer);
+      elements.metronomeButton.classList.remove("is-beat", "is-downbeat");
+    }, 180);
+    visualBeatTimers.add(resetTimer);
+  }, delay);
+  visualBeatTimers.add(beatTimer);
+}
+
 function scheduleClick(time, isDownbeat) {
   const oscillator = audioContext.createOscillator();
   const gain = audioContext.createGain();
@@ -149,6 +169,7 @@ function scheduleClick(time, isDownbeat) {
   oscillator.onended = () => metronomeNodes.delete(node);
   oscillator.start(time);
   oscillator.stop(time + 0.05);
+  scheduleVisualBeat(time, isDownbeat);
 }
 
 function runMetronomeScheduler() {
@@ -183,6 +204,9 @@ function stopMetronome() {
     try { oscillator.stop(); } catch { /* The click may already have ended. */ }
   });
   metronomeNodes.clear();
+  visualBeatTimers.forEach((timer) => window.clearTimeout(timer));
+  visualBeatTimers.clear();
+  elements.metronomeButton.classList.remove("is-beat", "is-downbeat");
 }
 
 function stopAllPlayback() {
