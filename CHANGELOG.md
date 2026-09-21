@@ -2,6 +2,14 @@
 
 This file records production releases and the patches included in each deploy. Dates reflect the Git commit history.
 
+## Unreleased
+
+### Added
+
+- Synchronized visual pulse for metronome and count-in beats.
+- Stronger visual accent on the first beat of each four-beat bar.
+- Reduced-motion treatment that preserves beat feedback without scaling.
+
 ## V2 — Audio capture quality
 
 Released September 20, 2026 in merge commit `c143bb8`.
@@ -63,4 +71,3 @@ Released September 20, 2026 in commit `8412abc`.
 ## Project initialization
 
 Created September 19, 2026 in commit `8a20668` with the initial static application files.
-

@@ -12,7 +12,7 @@ V2 improves browser recording quality and documents the current desktop-first su
 
 - Record freeform audio layers from the browser microphone.
 - Record tempo-aligned loops of 1, 2, 4, or 8 bars.
-- Optional one-bar count-in and synthesized metronome at 40–240 BPM.
+- Optional one-bar count-in and synthesized metronome with a synchronized visual pulse at 40–240 BPM.
 - Layer playback, mute, deletion, and 10 ms timing adjustments.
 - Automatic latency compensation using browser-reported output latency.
 - Waveform visualization and playhead for the selected layer.
@@ -60,4 +60,3 @@ Then open `http://localhost:8000`. Microphone access requires user permission. P
 - `main` is the production branch deployed by Vercel.
 - `preview` is used for browser and device validation in a Vercel preview environment.
 - Changes are tested on `preview`, committed and pushed, then merged into `main` for release.
-
